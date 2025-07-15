@@ -98,7 +98,7 @@ def to_aperture_plane(r1, r2, r3):
     return b1, b3
 
 class SmallestCircle():
-    """find the smallest circle enclosing a set of poings using the welzl algorithm"""
+    """find the smallest circle enclosing a set of points using the welzl algorithm"""
     def __init__(self,points):
         self.points = points
     
@@ -209,15 +209,23 @@ def run(args=None):
     expt = expt[0]
 
     # keep only indexed reflections if they exist
-    indexed = refl.select(refl.get_flags(refl.flags.indexed))
+    #indexed = refl.select(refl.get_flags(refl.flags.indexed))
+
+    integrated = refl.select(refl.get_flags(refl.flags.integrated))
+    a = integrated['intensity.sum.value'].as_numpy_array()
+    b = integrated['intensity.sum.variance'].as_numpy_array()
+    #plt.plot(a/np.sqrt(b))
+    isincl = a/np.sqrt(b) > 4;
+    strong = integrated.select(flumpy.from_numpy(isincl))
+    
     predicted = refl.select(refl.get_flags(refl.flags.predicted))
     
     # make sure we have indexed and predicted reflections present
-    if indexed.size() == 0 or predicted.size() == 0:
+    if strong.size() == 0 or predicted.size() == 0:
         logger.info('Algorithm only works on integrated reflections. run dials.integrate first')
         return    
-    logger.info(f'Keeping indexed reflections only ({indexed.size()} / {refl.size()})')
-    refl = indexed
+    logger.info(f'Keeping strong reflections only ({strong.size()} / {refl.size()})')
+    refl = strong
 
     # convert to diffraction vectors
     #angle, r1, r2, r3 = calc_diffraction_vectors(expt, refl)
