@@ -27,6 +27,9 @@ phil_scope = iotbx.phil.parse(
   maxoutliers = 50
     .type = int
     .help = "Maximum number of outliers to consider"
+  i_sig_i_cutoff = 4
+    .type = float
+    .help = "I/sigma_I cutoff for reflections used to determine the mask boundary"
   maxpoints = 500
     .type = int
     .help = "Maximum number of points to consider (those kept are furthest from the mean aperture position)"
@@ -188,10 +191,11 @@ def run(args=None):
         read_experiments=True,
         read_reflections=True,
         epilog=help_message,
+        check_format=False,
     )
 
     params, options, args = parser.parse_args(
-        args, show_diff_phil=False, return_unhandled=True
+        args, show_diff_phil=False, return_unhandled=True,
     )
     
     log.config(verbosity=options.verbose, logfile=params.output.log)
@@ -203,7 +207,7 @@ def run(args=None):
         logger.info(diff_phil)
     
     refl, expt = reflections_and_experiments_from_files(
-        params.input.reflections, params.input.experiments
+        params.input.reflections, params.input.experiments,
     )
     refl = refl[0] # why is this a list?
     expt = expt[0]
@@ -215,7 +219,7 @@ def run(args=None):
     a = integrated['intensity.sum.value'].as_numpy_array()
     b = integrated['intensity.sum.variance'].as_numpy_array()
     #plt.plot(a/np.sqrt(b))
-    isincl = a/np.sqrt(b) > 4;
+    isincl = a/np.sqrt(b) > params.i_sig_i_cutoff;
     strong = integrated.select(flumpy.from_numpy(isincl))
     
     predicted = refl.select(refl.get_flags(refl.flags.predicted))
@@ -298,7 +302,6 @@ def run(args=None):
     isincl = rsq < 1.0001*model['radius']*model['radius']
     
     masked = refl.select(flumpy.from_numpy(isincl))
-    
     
     logger.info('-'*80)
     logger.info(f'{masked.size()} reflections were kept (of {refl.size()})')
