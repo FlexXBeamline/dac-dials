@@ -37,7 +37,7 @@ phil_scope = iotbx.phil.parse(
      reflections = 'masked.refl'
         .type = str
         .help = "The masked reflections output filename"
-     log = 'fit_gasket_mask.log'
+     log = 'dac.fit_gasket_mask.log'
         .type = str
         .help = "Name of log file"
     }

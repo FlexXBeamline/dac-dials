@@ -30,7 +30,7 @@ phil_scope = iotbx.phil.parse(
      reflections = 'trimmed.refl'
         .type = str
         .help = "The trimmed reflections output filename"
-     log = 'trim_image_range.log'
+     log = 'dac.trim_image_range.log'
         .type = str
         .help = "Name of log file"
     }
