@@ -121,6 +121,35 @@ Optional arguments can be specified if needed. To see the list of options, type:
 dac.fit_gasket_mask -c -a1
 ```
 
+The following output is produced:
+
+```
+Showing configuration parameters with:
+  attributes_level = 1
+  expert_level = 0
+
+phi0 = 0
+  .help = "value of rotation angle when beam passes through the gasket (center"
+          "of scan)"
+threshold = 4
+  .help = "I/sigma_I threshold for reflections used to determine the mask"
+          "boundary"
+output {
+  reflections = 'masked.refl'
+    .help = "The masked reflections output filename"
+  log = 'dac.fit_gasket_mask.log'
+    .help = "Name of log file"
+  gasket_mask = 'gasket_mask.json'
+    .help = "The best gasket mask model"
+}
+input {
+  experiments = None
+    .help = "The experiment list file path"
+  reflections = None
+    .help = "The reflection table file path"
+}
+```
+
 In particular, the program assumes that the diamond windows are normal to the beam when the rotation angle is zero. If not, the correct angle should be set using the option `phi0=<angle-in-degrees>`, and in the following step (`dials.anvil_correction`).
 
 ### 4. Trimming the image range
@@ -135,6 +164,33 @@ A file `trimmed.refl` is saved. The default thresholds are designed to work in m
 
 ```
 dac.trim_image_range -c -a1
+```
+
+The following output is produced:
+
+```
+Showing configuration parameters with:
+  attributes_level = 1
+  expert_level = 0
+
+threshold = 1.0
+  .help = "Frames are trimmed from beginning/end if the mean I/sigma_I is less"
+          "than this threshold"
+window = 10
+  .help = "Moving window (number of images) for smoothing results, helpful"
+          "especially for fine-sliced or sparse data"
+output {
+  reflections = 'trimmed.refl'
+    .help = "The trimmed reflections output filename"
+  log = 'dac.trim_image_range.log'
+    .help = "Name of log file"
+}
+input {
+  experiments = None
+    .help = "The experiment list file path"
+  reflections = None
+    .help = "The reflection table file path"
+}
 ```
 
 ### 5. Correcting diamond absorption
