@@ -167,7 +167,7 @@ def arg_furthest_points(x, y, Nmax, center=None):
         Nmax = len(x)
     if center is None:
         center = [np.mean(x), np.mean(y)]
-    center_distance = np.sqrt((x-center[0])**2 + (y-center[0])**2)
+    center_distance = np.sqrt((x-center[0])**2 + (y-center[1])**2)
     return np.argpartition(center_distance, -Nmax)[-Nmax:]
     
 def fit_circle(x, y, point_set=None, boundary_set=None, Nmax=1000):
