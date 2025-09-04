@@ -33,7 +33,7 @@ We recommend using creating a stand-alone conda environment with DIALS and dac-d
 ```bash
 micromamba create -n dac-dials -c conda-forge
 micromamba activate dac-dials
-micromamba install python=3.10 dials pip
+micromamba install python=3.10 dials xia2 pip
 pip install git+https://github.com/FlexXBeamline/dac-dials.git
 ```
 
