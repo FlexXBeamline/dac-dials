@@ -19,9 +19,12 @@ help_message = __doc__
 
 phil_scope = iotbx.phil.parse(
     """\
-  threshold = 1.0
+  threshold = None
     .type = float
     .help = "Frames are trimmed from beginning/end if the mean I/sigma_I is less than this threshold"
+  threshold_relative = 0.1
+    .type = float
+    .help = "I/sigma_I threshold relative to the maximum (default unless set explicitly)"
   window = 10
     .type = int
     .help = "Moving window (number of images) for smoothing results, helpful especially for fine-sliced or sparse data"
@@ -62,7 +65,9 @@ def accum_sliding_window(v, winsize):
     return va
 
 
-def image_range_by_i_sig_i_cutoff(refl, threshold=1.0, winsize=10, minpoints=10):
+def image_range_by_i_sig_i_cutoff(
+    refl, threshold=None, threshold_relative=0.1, winsize=10, minpoints=10
+):
     # refl -- integrated reflections. use refl.select(refl.get_flags(refl.flags.integrated))
 
     # calculate i_sig_i, z for each reflection
@@ -86,6 +91,9 @@ def image_range_by_i_sig_i_cutoff(refl, threshold=1.0, winsize=10, minpoints=10)
     np.seterr(divide="ignore", invalid="ignore")
     y = bfill(ffill(sa / da))
     np.seterr(divide="warn", invalid="warn")  # Reset to default
+    if threshold is None:
+        threshold = np.max(y) * threshold_relative
+        logger.info(f"Using I/sig_I threshold: {threshold:<.3f}")
     ind = np.where(np.logical_and(y > threshold, da > minpoints))[0]
 
     return ind[0], ind[-1]
@@ -133,7 +141,10 @@ def run(args=None):
     # run the algorithm
     integrated = refl.select(refl.get_flags(refl.flags.integrated))
     zmin, zmax = image_range_by_i_sig_i_cutoff(
-        integrated, threshold=params.threshold, winsize=params.window
+        integrated,
+        threshold=params.threshold,
+        threshold_relative=params.threshold_relative,
+        winsize=params.window,
     )
     trimmed = trim_reflections_to_image_range(refl, zmin, zmax)
 
