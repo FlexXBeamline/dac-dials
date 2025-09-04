@@ -1,5 +1,7 @@
 # `dac-dials`
 
+[![DOI](https://zenodo.org/badge/722199920.svg)](https://doi.org/10.5281/zenodo.17058003)
+
 A [DIALS](https://dials.github.io/) extension for processing high pressure macromolecular crystallography data collected using a diamond anvil cell (DAC). 
 
 In this method, crystals are placed in a metal gasket sandwiched between two diamonds, and the (hydrostatic) pressure is controlled by the force pushing the diamonds together. The X-ray beam passes through the diamonds and gasket. Because the gasket is relatively thick, it can block high-angle diffraction, casting a "shadow" on the detector. The shadowed region changes during data collection as the DAC is rotated, and it depends on the three-dimensional location of the crystal within the gasket. To properly account for this, we refine a geometric model of the DAC that best accounts for the Bragg peaks we observe.
