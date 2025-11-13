@@ -110,7 +110,7 @@ The resolution cutoff `d_min` is optional -- if you know it already, or can esti
 Next, we will fit a model for the gasket aperture.
 
 ```
-dac.fit_gasket_mask.py integrated.expt integrated.refl
+dac.fit_gasket_mask integrated.expt integrated.refl
 ```
 
 The script saves a file `masked.refl` where the integrated reflections that are occluded have been removed. 
